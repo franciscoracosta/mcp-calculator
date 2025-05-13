@@ -1,22 +1,29 @@
 from fastmcp import FastMCP
-from middleware import SubscriptionMiddleware
 import uvicorn
-from dotenv import load_dotenv
-load_dotenv()
 
-mcp = FastMCP("Calculator Server")
+mcp = FastMCP("Free MCP Calculator")
 
-# Public tool
 @mcp.tool()
 def add(a: int, b: int) -> int:
-    """Public endpoint: Add two numbers"""
+    """Add two numbers"""
     return a + b
 
-# Premium tool (subscription needed)
-@mcp.tool(middleware=[SubscriptionMiddleware()])
-def premium_multiply(a: int, b: int) -> int:
-    """Premium endpoint: Multiply two numbers"""
+@mcp.tool()
+def subtract(a: int, b: int) -> int:
+    """Subtract two numbers"""
+    return a - b
+
+@mcp.tool()
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers"""
     return a * b
+
+@mcp.tool()
+def divide(a: int, b: int) -> float:
+    """Divide two numbers"""
+    if b == 0:
+        raise ValueError("Cannot divide by zero.")
+    return a / b
 
 if __name__ == "__main__":
     uvicorn.run(mcp.app, host="0.0.0.0", port=8000)
